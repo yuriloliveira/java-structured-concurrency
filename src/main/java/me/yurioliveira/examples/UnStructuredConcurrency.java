@@ -14,14 +14,12 @@ void main() throws InterruptedException {
 
     Result<Profile.Details> detailsResult = Result.notReady();
     Thread detailsThread = builder.start(() -> {
-//        sleep(1000);
         detailsResult.setValue(profile.loadDetails());
         log("Finished after %d ms", ANSI_YELLOW, counter.elapsed().toMillis());
     });
 
     Result<Integer> followersCountResult = Result.notReady();
     Thread followersCountThread = builder.start(() -> {
-//        sleep(500);
         followersCountResult.setValue(profile.loadFollowerCount());
         log("Finished after %d ms", ANSI_PURPLE, counter.elapsed().toMillis());
     });
@@ -36,5 +34,11 @@ void main() throws InterruptedException {
     followersCountThread.join();
     followersThread.join();
 
-    Result.logAll(detailsResult, followersCountResult, followersResult);
+    Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
+        detailsResult.getValue(),
+        followersCountResult.getValue(),
+        followersResult.getValue()
+    );
+
+    log("%s", ANSI_GREEN, completeProfile);
 }

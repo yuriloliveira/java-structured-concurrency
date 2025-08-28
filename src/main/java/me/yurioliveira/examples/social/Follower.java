@@ -8,6 +8,11 @@ public record Follower(String username) {
     public static Follower load() {
         sleep(250);
         log("Loaded follower", ANSI_BLUE);
-        return new Follower("John Doe");
+        return new Follower("johnd");
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

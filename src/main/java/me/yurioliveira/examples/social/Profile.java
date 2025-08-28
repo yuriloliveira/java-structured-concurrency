@@ -5,20 +5,15 @@ import java.util.stream.IntStream;
 
 import static me.yurioliveira.helpers.Sleep.sleep;
 
-public class Profile {
-    private final int followerCount;
-
-    public Profile(int followerCount) {
-        this.followerCount = followerCount;
-    }
+public record Profile(int followerCount) {
 
     public Details loadDetails() {
-        sleep(1000);
+        sleep(2000);
         return new Details("johnd", "John Doe");
     }
 
     public Integer loadFollowerCount() {
-        sleep(500);
+        sleep(1000);
         return followerCount;
     }
 
@@ -28,6 +23,13 @@ public class Profile {
             .mapToObj(_ -> Follower.load())
             .toList();
 
+    }
+
+    public <T> T loadWithError(String resource) {
+        sleep(1000);
+        var error = new RuntimeException(resource + " could not be loaded 😓");
+        error.printStackTrace();
+        throw error;
     }
 
     public record Details(String username, String fullName) {}

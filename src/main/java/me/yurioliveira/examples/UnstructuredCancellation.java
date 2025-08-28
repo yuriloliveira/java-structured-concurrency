@@ -1,8 +1,9 @@
+import me.yurioliveira.examples.social.Follower;
+import me.yurioliveira.examples.social.Profile;
 import me.yurioliveira.helpers.Result;
 import me.yurioliveira.helpers.TimeCounter;
 
-import static me.yurioliveira.helpers.Sleep.sleep;
-import static me.yurioliveira.helpers.ThreadAwareLogging.log;
+import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 
 void main() throws InterruptedException {
     Thread.Builder builder = Thread.ofVirtual().name("outer");
@@ -12,35 +13,45 @@ void main() throws InterruptedException {
     builder.start(() -> {
         Thread.Builder innerBuilder = Thread.ofVirtual().name("inner", 1);
 
-        final Result<String> result1 = Result.notReady();
-        Thread thread1 = innerBuilder.start(() -> {
-           IntStream
-               .range(0, 10)
-               .forEach(el -> {
-                   log("Processing %d%% done\n", el*10);
-                   sleep(500L);
-               });
-           result1.setValue("Result 1");
-           log("Finished after %d ms\n", counter.elapsed().toMillis());
+        Profile profile = new Profile(20);
+
+        Result<Profile.Details> detailsResult = Result.notReady();
+        Thread detailsThread = innerBuilder.start(() -> {
+            log("Loading details...", ANSI_YELLOW);
+            detailsResult.setValue(profile.loadDetails());
+            log("Finished after %d ms", ANSI_YELLOW, counter.elapsed().toMillis());
         });
 
-
-        Result<String> result2 = Result.notReady();
-        Thread thread2 = innerBuilder.start(() -> {
-           sleep(2000L);
-           log("Finished after %d ms\n", counter.elapsed().toMillis());
-           result2.setValue("Result 2");
+        Result<Integer> followersCountResult = Result.notReady();
+        Thread followersCountThread = innerBuilder.start(() -> {
+            log("Loading followers count...", ANSI_PURPLE);
+            followersCountResult.setValue(profile.loadFollowerCount());
+            log("Finished after %d ms", ANSI_PURPLE, counter.elapsed().toMillis());
         });
 
+        Result<List<Follower>> followersResult = Result.notReady();
+        Thread followersThread = innerBuilder.start(() -> {
+            log("Loading followers...", ANSI_BLUE);
+            followersResult.setValue(profile.loadFollowers());
+            log("Finished after %d ms", ANSI_BLUE, counter.elapsed().toMillis());
+        });
 
         try {
-            thread1.join(500);
-            log("Gave up on thread 1...\n");
-            thread2.join(2500);
+            detailsThread.join(500);
+            log("Gave up on details thread ☠️", ANSI_RED);
+            followersCountThread.join(1000);
+            log("Gave up on followers count thread ☠️", ANSI_RED);
+            followersThread.join(1000);
 
-            Result.logAll(result1, result2);
+            Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
+                detailsResult.getValue(),
+                followersCountResult.getValue(),
+                followersResult.getValue()
+            );
+
+            log("%s", ANSI_GREEN, completeProfile);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }).join();
 }
