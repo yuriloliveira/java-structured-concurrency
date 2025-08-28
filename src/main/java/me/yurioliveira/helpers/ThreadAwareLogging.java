@@ -21,5 +21,6 @@ public class ThreadAwareLogging {
         System.out.print(color);
         System.out.printf(logStatement, args);
         System.out.print(ANSI_RESET);
+        System.out.println();
     }
 }

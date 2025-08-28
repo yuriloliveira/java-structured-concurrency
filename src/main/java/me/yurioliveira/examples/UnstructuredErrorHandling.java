@@ -1,7 +1,7 @@
 import me.yurioliveira.helpers.TimeCounter;
 
 import static me.yurioliveira.helpers.Sleep.sleep;
-import static me.yurioliveira.helpers.ThreadAwareLogging.log;
+import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 
 void main() throws InterruptedException {
     Thread.Builder builder = Thread.ofVirtual().name("outer");
@@ -15,15 +15,15 @@ void main() throws InterruptedException {
            IntStream
                .range(0, 10)
                .forEach(el -> {
-                   log("Processing element %d\n", el);
+                   log("Processing element %d\n", ANSI_YELLOW, el);
                    sleep(500L);
                });
-           log("Finished after %d ms\n", counter.elapsed().toMillis());
+           log("Finished after %d ms\n", ANSI_YELLOW, counter.elapsed().toMillis());
         });
 
         Thread thread2 = innerBuilder.start(() -> {
            sleep(2000L);
-           log("Failed after %d ms\n", counter.elapsed().toMillis());
+           log("Failed after %d ms\n", ANSI_PURPLE, counter.elapsed().toMillis());
            throw new RuntimeException("Something went wrong");
         });
 
