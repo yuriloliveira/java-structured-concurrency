@@ -16,21 +16,21 @@ void main() throws InterruptedException {
         Result<Profile.Details> detailsResult = Result.notReady();
         Thread detailsThread = builder.start(() -> {
             log("Loading details...", ANSI_YELLOW);
-            detailsResult.setValue(profile.loadWithError("Profile details"));
+            detailsResult.set(profile.loadWithError("Profile details"));
             log("Finished after %d ms", ANSI_YELLOW, counter.elapsed().toMillis());
         });
 
         Result<Integer> followersCountResult = Result.notReady();
         Thread followersCountThread = builder.start(() -> {
             log("Loading followers count...", ANSI_PURPLE);
-            followersCountResult.setValue(profile.loadFollowerCount());
+            followersCountResult.set(profile.loadFollowerCount());
             log("Finished after %d ms", ANSI_PURPLE, counter.elapsed().toMillis());
         });
 
         Result<List<Follower>> followersResult = Result.notReady();
         Thread followersThread = builder.start(() -> {
             log("Loading followers...", ANSI_BLUE);
-            followersResult.setValue(profile.loadFollowers());
+            followersResult.set(profile.loadFollowers());
             log("Finished after %d ms", ANSI_BLUE, counter.elapsed().toMillis());
         });
 
@@ -40,9 +40,9 @@ void main() throws InterruptedException {
             followersThread.join();
 
             Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
-                detailsResult.getValue(),
-                followersCountResult.getValue(),
-                followersResult.getValue()
+                detailsResult.get(),
+                followersCountResult.get(),
+                followersResult.get()
             );
             log("%s", ANSI_GREEN, completeProfile);
         } catch (InterruptedException e) {

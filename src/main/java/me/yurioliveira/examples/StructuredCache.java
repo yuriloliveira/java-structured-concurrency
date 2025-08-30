@@ -23,7 +23,7 @@ void main() {
 
                 scope.fork(() -> {
                     cachedProfile.setIfNotNull(loadCompleteProfile(counter));
-                    return cachedProfile.getValue();
+                    return cachedProfile.get();
                 });
 
                 scope.join();
@@ -39,11 +39,11 @@ void main() {
 
 private static Profile.CompleteProfile getCompleteProfileFromCahe(Result<Profile.CompleteProfile> cachedProfile) {
     sleep(500);
-    if (cachedProfile.getValue() != null) {
+    if (cachedProfile.get() != null) {
         log("Profile was cached 🤙", ANSI_WHITE);
     }
     return Optional
-            .ofNullable(cachedProfile.getValue())
+            .ofNullable(cachedProfile.get())
             .orElseThrow(() -> new ProfileException("Cached profile not found"));
 }
 

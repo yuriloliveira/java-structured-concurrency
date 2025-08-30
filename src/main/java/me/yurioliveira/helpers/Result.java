@@ -1,9 +1,5 @@
 package me.yurioliveira.helpers;
 
-import java.util.stream.Stream;
-
-import static me.yurioliveira.helpers.ThreadAwareLogging.*;
-
 public class Result<T> {
     private volatile T value;
 
@@ -11,7 +7,7 @@ public class Result<T> {
         this.value = value;
     }
 
-    public void setValue(T value) {
+    public void set(T value) {
         this.value = value;
     }
 
@@ -21,23 +17,11 @@ public class Result<T> {
         }
     }
 
-    public T getValue() {
+    public T get() {
         return this.value;
     }
 
     public static <T> Result<T> notReady() {
         return new Result<>(null);
-    }
-
-    public static void logAll(Result... results) {
-        boolean allComplete = Stream
-            .of(results)
-            .allMatch(result -> result.getValue() != null);
-
-        if (allComplete) {
-            log("All results were complete!", ANSI_GREEN);
-        } else {
-            log("Some or all results are incomplete...", ANSI_RED);
-        }
     }
 }
