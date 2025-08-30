@@ -44,7 +44,7 @@ void main() throws InterruptedException {
                 followersCountResult.get(),
                 followersResult.get()
             );
-            log("%s", ANSI_GREEN, completeProfile);
+            completeProfile.log();
         } catch (InterruptedException e) {
             log(e);
         }

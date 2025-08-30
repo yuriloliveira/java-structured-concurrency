@@ -1,11 +1,12 @@
 package me.yurioliveira.examples.social;
 
+import me.yurioliveira.helpers.ThreadAwareLogging;
+
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static me.yurioliveira.helpers.Sleep.sleep;
-import static me.yurioliveira.helpers.ThreadAwareLogging.ANSI_RED;
-import static me.yurioliveira.helpers.ThreadAwareLogging.log;
+import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 
 public record Profile(int followerCount) {
 
@@ -36,5 +37,25 @@ public record Profile(int followerCount) {
 
     public record Details(String username, String fullName) {}
 
-    public record CompleteProfile(Details details, Integer followerCount, List<Follower> followers) {}
+    public record CompleteProfile(Details details, Integer followerCount, List<Follower> followers) {
+        public void log() {
+            var detailsColor = details != null ? ANSI_GREEN : ANSI_RED;
+            var followerCountColor = followerCount != null ? ANSI_GREEN : ANSI_RED;
+            var followersColor = followers != null ? ANSI_GREEN : ANSI_RED;
+
+            ThreadAwareLogging.log(
+                "CompleteProfile[%sdetails=%s%s, %sfollowerCount=%s%s, %sfollowers=%s%s]",
+                ANSI_GREEN,
+                detailsColor,
+                details,
+                ANSI_GREEN,
+                followerCountColor,
+                followerCount,
+                ANSI_GREEN,
+                followersColor,
+                followers,
+                ANSI_GREEN
+            );
+        }
+    }
 }

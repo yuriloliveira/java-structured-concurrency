@@ -27,7 +27,7 @@ void main() {
                 });
 
                 scope.join();
-                log("%s", ANSI_GREEN, scope.result());
+                scope.result().log();
             } catch (ExecutionException | InterruptedException e) {
                 log(e);
             }

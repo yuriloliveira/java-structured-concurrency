@@ -11,6 +11,8 @@ void main() throws InterruptedException {
 
     var counter = TimeCounter.start();
 
+
+    Result<Profile.CompleteProfile> completeProfile = Result.notReady();
     builder.start(() -> {
         Thread.Builder innerBuilder = Thread.ofVirtual().name("inner", 1);
 
@@ -42,19 +44,24 @@ void main() throws InterruptedException {
             followersCountThread.join();
             followersThread.join();
 
-            Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
+            completeProfile.set(new Profile.CompleteProfile(
                 detailsResult.get(),
                 followersCountResult.get(),
                 followersResult.get()
-            );
-
-            log("%s", ANSI_GREEN, completeProfile);
+            ));
         } catch (InterruptedException e) {
             log("Error: %s", ANSI_RED, e.getMessage());
         }
     }).join(1000);
 
     log("Gave up on processing ☠️... Not going to do anything with the result...", ANSI_RED);
+
+    if (completeProfile.get() == null) {
+        completeProfile.set(new Profile.CompleteProfile(null, null, null));
+    }
+
+    completeProfile.get().log();
+
 
     sleep(2000);
 }

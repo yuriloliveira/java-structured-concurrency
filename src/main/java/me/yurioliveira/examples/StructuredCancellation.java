@@ -38,7 +38,7 @@ void main() {
             followersCountTask.get(),
             followersTask.get()
         );
-        log("%s", ANSI_GREEN, completeProfile);
+        completeProfile.log();
     } catch (InterruptedException | TimeoutException e) {
         log(e);
     }
