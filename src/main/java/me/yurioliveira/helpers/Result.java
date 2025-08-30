@@ -15,6 +15,12 @@ public class Result<T> {
         this.value = value;
     }
 
+    public void setIfNotNull(T value) {
+        if (value != null) {
+            this.value = value;
+        }
+    }
+
     public T getValue() {
         return this.value;
     }
