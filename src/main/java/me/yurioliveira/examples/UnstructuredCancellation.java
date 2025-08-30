@@ -38,11 +38,9 @@ void main() throws InterruptedException {
         });
 
         try {
-            detailsThread.join(500);
-            log("Gave up on details thread ☠️", ANSI_RED);
-            followersCountThread.join(1000);
-            log("Gave up on followers count thread ☠️", ANSI_RED);
-            followersThread.join(1000);
+            detailsThread.join();
+            followersCountThread.join();
+            followersThread.join();
 
             Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
                 detailsResult.getValue(),
@@ -54,6 +52,9 @@ void main() throws InterruptedException {
         } catch (InterruptedException e) {
             log("Error: %s", ANSI_RED, e.getMessage());
         }
-    }).join();
-    sleep(2500);
+    }).join(1000);
+
+    log("Gave up on processing ☠️... Not going to do anything with the result...", ANSI_RED);
+
+    sleep(2000);
 }
