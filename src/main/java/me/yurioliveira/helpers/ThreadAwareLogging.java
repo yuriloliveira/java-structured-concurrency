@@ -23,4 +23,9 @@ public class ThreadAwareLogging {
         System.out.print(ANSI_RESET);
         System.out.println();
     }
+
+    @SuppressWarnings("CallToPrintStackTrace")
+    public static void log(Throwable t) {
+        t.printStackTrace();
+    }
 }

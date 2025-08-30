@@ -29,7 +29,7 @@ public record Profile(int followerCount) {
 
     public <T> T loadWithError(String resource) {
         sleep(1000);
-        var error = new RuntimeException(resource + " could not be loaded 😓");
+        var error = new ProfileException(resource + " could not be loaded 😓");
         log("Error: %s", ANSI_RED, error.getMessage());
         throw error;
     }

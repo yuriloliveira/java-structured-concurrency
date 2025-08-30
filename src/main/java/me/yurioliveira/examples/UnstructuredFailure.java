@@ -46,7 +46,7 @@ void main() throws InterruptedException {
             );
             log("%s", ANSI_GREEN, completeProfile);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log(e);
         }
 
     }).join();
