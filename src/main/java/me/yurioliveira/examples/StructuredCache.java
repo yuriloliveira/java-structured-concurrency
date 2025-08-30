@@ -19,7 +19,7 @@ void main() {
         do {
             try (final var scope = new StructuredTaskScope.ShutdownOnSuccess<Profile.CompleteProfile>()) {
 
-                scope.fork(() -> getCompleteProfileFromCahe(cachedProfile));
+                scope.fork(() -> getCompleteProfileFromCache(cachedProfile));
 
                 scope.fork(() -> {
                     cachedProfile.setIfNotNull(loadCompleteProfile(counter));
@@ -37,7 +37,7 @@ void main() {
 
 }
 
-private static Profile.CompleteProfile getCompleteProfileFromCahe(Result<Profile.CompleteProfile> cachedProfile) {
+private static Profile.CompleteProfile getCompleteProfileFromCache(Result<Profile.CompleteProfile> cachedProfile) {
     sleep(500);
     if (cachedProfile.get() != null) {
         log("Profile was cached 🤙", ANSI_WHITE);
