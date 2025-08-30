@@ -3,6 +3,7 @@ import me.yurioliveira.examples.social.Profile;
 import me.yurioliveira.helpers.Result;
 import me.yurioliveira.helpers.TimeCounter;
 
+import static me.yurioliveira.helpers.Sleep.sleep;
 import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 
 void main() throws InterruptedException {
@@ -51,7 +52,8 @@ void main() throws InterruptedException {
 
             log("%s", ANSI_GREEN, completeProfile);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log("Error: %s", ANSI_RED, e.getMessage());
         }
     }).join();
+    sleep(2500);
 }
