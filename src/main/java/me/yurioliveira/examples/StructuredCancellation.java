@@ -2,6 +2,7 @@ import me.yurioliveira.examples.social.Follower;
 import me.yurioliveira.examples.social.Profile;
 import me.yurioliveira.helpers.TimeCounter;
 
+import static me.yurioliveira.helpers.Sleep.sleep;
 import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 
 @SuppressWarnings("preview")
@@ -31,14 +32,16 @@ void main() {
             return followers;
         });
 
-        scope.join();
+        scope.joinUntil(Instant.now().plusMillis(1500));
         Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
             detailsTask.get(),
             followersCountTask.get(),
             followersTask.get()
         );
         log("%s", ANSI_GREEN, completeProfile);
-    } catch (InterruptedException e) {
-        log("Error: %s", ANSI_RED, e.getMessage());
+    } catch (InterruptedException | TimeoutException e) {
+        log(e);
     }
+
+    sleep(2500);
 }
