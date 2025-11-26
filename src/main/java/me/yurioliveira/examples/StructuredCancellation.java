@@ -8,7 +8,10 @@ import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 @SuppressWarnings("preview")
 void main() {
     var counter = TimeCounter.start();
-    try (final var scope =  new StructuredTaskScope.ShutdownOnFailure()) {
+    try (final var scope = StructuredTaskScope.open(
+            StructuredTaskScope.Joiner.allSuccessfulOrThrow(),
+            config -> config.withTimeout(Duration.ofMillis(1500))
+    )) {
         Profile profile = new Profile(10);
 
         StructuredTaskScope.Subtask<Profile.Details> detailsTask = scope.fork(() -> {
@@ -32,14 +35,14 @@ void main() {
             return followers;
         });
 
-        scope.joinUntil(Instant.now().plusMillis(1500));
+        scope.join();
         Profile.CompleteProfile completeProfile = new Profile.CompleteProfile(
             detailsTask.get(),
             followersCountTask.get(),
             followersTask.get()
         );
         completeProfile.log();
-    } catch (InterruptedException | TimeoutException e) {
+    } catch (InterruptedException e) {
         log(e);
     }
 

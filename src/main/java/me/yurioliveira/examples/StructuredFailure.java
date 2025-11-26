@@ -8,7 +8,7 @@ import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 @SuppressWarnings("preview")
 void main() {
     var counter = TimeCounter.start();
-    try (final var scope =  new StructuredTaskScope.ShutdownOnFailure()) {
+    try (final var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
         Profile profile = new Profile(20);
 
         scope.fork(() -> {
@@ -33,7 +33,6 @@ void main() {
         });
 
         scope.join();
-        log(scope.exception().orElseGet(() -> new RuntimeException("Not gonna happen")));
     } catch (InterruptedException e) {
         log(e);
     }

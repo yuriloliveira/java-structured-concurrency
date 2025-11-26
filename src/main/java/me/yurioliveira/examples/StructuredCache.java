@@ -17,7 +17,7 @@ void main() {
     try (var scan = new Scanner(System.in)) {
 
         do {
-            try (final var scope = new StructuredTaskScope.ShutdownOnSuccess<Profile.CompleteProfile>()) {
+            try (final var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.anySuccessfulResultOrThrow())) {
 
                 scope.fork(() -> getCompleteProfileFromCache(cachedProfile));
 
@@ -26,9 +26,8 @@ void main() {
                     return cachedProfile.get();
                 });
 
-                scope.join();
-                scope.result().log();
-            } catch (ExecutionException | InterruptedException e) {
+                ((Profile.CompleteProfile) scope.join()).log();
+            } catch (InterruptedException e) {
                 log(e);
             }
 
@@ -54,7 +53,7 @@ private boolean shouldContinue(Scanner scan) {
 
 @SuppressWarnings("preview")
 private static Profile.CompleteProfile loadCompleteProfile(TimeCounter counter) {
-    try (final var scope =  new StructuredTaskScope.ShutdownOnFailure()) {
+    try (final var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
         Profile profile = new Profile(10);
 
         StructuredTaskScope.Subtask<Profile.Details> detailsTask = scope.fork(() -> {

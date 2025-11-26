@@ -7,7 +7,7 @@ import static me.yurioliveira.helpers.ThreadAwareLogging.*;
 @SuppressWarnings("preview")
 void main() {
     var counter = TimeCounter.start();
-    try (final var scope =  new StructuredTaskScope.ShutdownOnFailure()) {
+    try (final var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
         Profile profile = new Profile(10);
 
         StructuredTaskScope.Subtask<Profile.Details> detailsTask = scope.fork(() -> {
